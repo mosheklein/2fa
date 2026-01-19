@@ -1,5 +1,6 @@
 'use client'
 import React, { useState } from 'react'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 const Login = () => {
@@ -16,11 +17,14 @@ const Login = () => {
         const email = fd.get('email')
         const password = fd.get('password')
 
-        if (password != '123')
-            setError("Wrong Password")
-        else {
-            router.replace('/')
+        const response = await signIn('credentials',{email:email, password:password})
+        
+        if (!response?.error){
+            router.replace("/")
             router.refresh()
+        }   
+        else {
+            setError("Wrong Password")
         }
 
     }
